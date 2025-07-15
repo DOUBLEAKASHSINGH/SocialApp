@@ -1,0 +1,26 @@
+<div class="otp-container">
+    <form [formGroup]="otpForm" (ngSubmit)="submitOtp()">
+        <div class="row form-outline mb-2 px-3">
+            <input class="form-control" type="text" formControlName="otp" placeholder="Enter OTP" required />
+            <div *ngIf="otp?.invalid && (otp?.dirty || otp?.touched)" class="text-danger">
+                <small *ngIf="otp?.errors?.['required']">OTP is required.</small>
+                <small *ngIf="otp?.errors?.['pattern']">OTP must be a 6-digit number.</small>
+            </div>
+        </div>
+
+        <!-- Virtual Keyboard -->
+        <div class="virtual-keyboard d-flex justify-content-center flex-wrap m-2">
+            <button *ngFor="let key of horizontalKeys" type="button" class="btn virtual-key"
+                [class.backspace]="key.value === 'back'" (click)="handleKeyPress(key)">
+                {{ key.label }}
+            </button>
+        </div>
+
+        <div class="row form-outline mb-2 px-3">
+            <button class="btn btn-dark btn-lg btn-block" type="submit" [disabled]="isLoading || otpForm.invalid">
+                {{ isLoading ? "Verifying..." : "Submit" }}
+                <span *ngIf="isLoading" aria-hidden="true" class="spinner-grow spinner-grow-sm" role="status"></span>
+            </button>
+        </div>
+    </form>
+</div>

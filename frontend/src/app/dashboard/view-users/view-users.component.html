@@ -1,0 +1,194 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isPageLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div
+    class="h3 text-danger text-center"
+    *ngIf="totalItems <= 0 && !isRelationListLoading && !errorLoadingData"
+>
+    No Users Found.
+</div>
+
+<div *ngIf="errorLoadingData" class="alert alert-danger text-center mx-5">
+    Error loading data. Go back to <a href="">home</a> page.
+</div>
+
+<div
+    *ngIf="!errorLoadingData && totalItems > 0"
+    class="container py-2"
+>
+    <div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-xl-10">
+                <div class="mb-3 row">
+                    <!-- Current products status -->
+                    <div class="col-sm-12">
+                        Displaying
+                        {{
+                            currentPage * itemsPerPage -
+                            itemsPerPage +
+                            1
+                        }}-{{
+                            min(
+                                currentPage * itemsPerPage,
+                                totalItems
+                            )
+                        }}
+                        of {{ totalItems }} Users.
+                    </div>
+                    <div class="col-sm-12 justify-content-end">
+                        <pagination
+                            *ngIf="totalItems > itemsPerPage"
+                            class="justify-content-end"
+                            [totalItems]="totalItems"
+                            [itemsPerPage]="itemsPerPage"
+                            [(ngModel)]="currentPage"
+                            [maxSize]="maxPageDisplay"
+                            [rotate]="false"
+                        ></pagination>
+                    </div>
+                </div>
+                <!-- Loading Spinner -->
+                <div class="row justify-content-center">
+                    <div
+                        class="spinner-grow text-dark p-5 m-5"
+                        role="status"
+                        *ngIf="isRelationListLoading"
+                    >
+                                        <span class="visually-hidden"
+                                        >Loading...</span
+                                        >
+                    </div>
+                </div>
+
+                <!-- User list -->
+                <div class="card-body" *ngIf="!isRelationListLoading">
+                    <div class="row">
+                        <div
+                            class="col-12 mb-1"
+                            *ngFor="let entry of relationList"
+                            [@pageChange]="currentPage"
+                        >
+                            <div class="card mb-3">
+                                <div class="row g-0">
+                                    <div class="col-md-8 p-4">
+                                        <h6
+                                            class="card-subtitle mb-2 text-muted"
+                                        >
+                                            Name:
+                                            {{
+                                                targetUser(entry).firstName +
+                                                " " +
+                                                targetUser(entry).lastName
+                                            }}
+                                        </h6>
+                                        <h6
+                                            class="text-primary mb-1 pb-3"
+                                        >
+                                            <span class="fs-6">
+                                                Email: {{ targetUser(entry).email }}
+                                            </span>
+                                        </h6>
+
+                                        @if (targetUser(entry).bio?.length) {
+                                            <p class="card-text">
+                                                <small class="text-body">
+                                                    {{ targetUser(entry).bio }}
+                                                </small>
+                                            </p>
+                                        }
+                                        <p class="card-text mb-0">
+                                            <small class="text-muted">
+                                                @if (targetUser(entry).isVerified) {
+                                                    Verified Account
+                                                } @else {
+                                                    Account Not Verified
+                                                }
+                                            </small>
+                                        </p>
+                                        @if (targetUser(entry).isAccountLocked) {
+                                            <p class="card-text mb-0">
+                                                <small class="text-danger">
+                                                    Account Locked
+                                                </small>
+                                            </p>
+                                        }
+                                        <p class="card-text mb-0" *ngIf="entry.createdAt">
+                                            <small
+                                                class="text-muted"
+                                            >
+                                                {{
+                                                    entry.createdAt
+                                                        | date
+                                                        : "dd MMM, yyyy"
+                                                }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="card-body">
+                                            @if (userCategory == 'friends') {
+                                                <button
+                                                    class="btn btn-sm btn-danger m-1 w-75"
+                                                    (click)="removeFriend(entry)"
+                                                >
+                                                    Remove Friend
+                                                </button>
+                                            }
+                                            @else if (userCategory == 'blocked') {
+                                                <button
+                                                    class="btn btn-sm btn-outline-success m-1 w-75"
+                                                    (click)="removeBlocked(entry)"
+                                                >
+                                                    Remove from Blocked
+                                                </button>
+                                            }
+                                            @else if (userCategory == 'received') {
+                                                <button
+                                                    class="btn btn-sm btn-success m-1 w-75"
+                                                    (click)="acceptRequest(entry)"
+                                                >
+                                                    Accept
+                                                </button>
+                                                <button
+                                                    class="btn btn-sm btn-danger m-1 w-75"
+                                                    (click)="rejectRequest(entry)"
+                                                >
+                                                    Reject
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div
+            class="row justify-content-center"
+            *ngIf="totalItems > itemsPerPage"
+        >
+            <div class="col-md-12 col-xl-10">
+                <div class="col-xs-12 col-12">
+                    <pagination
+                        class="justify-content-end"
+                        [totalItems]="totalItems"
+                        [itemsPerPage]="itemsPerPage"
+                        (pageChanged)="pageChanged($event)"
+                        [(ngModel)]="currentPage"
+                        [maxSize]="maxPageDisplay"
+                        [rotate]="false"
+                    ></pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

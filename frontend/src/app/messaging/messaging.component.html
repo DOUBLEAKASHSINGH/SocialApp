@@ -1,0 +1,406 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isPageLoading && !errorLoadingData">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<section
+    class="min-vh-100 background"
+    *ngIf="!isPageLoading && errorLoadingData"
+>
+    <app-header></app-header>
+    <div class="row d-flex justify-content-center align-items-center py-2 g-0">
+        <div class="card col col-md-11 col-xl-10">
+            <div
+                *ngIf="errorLoadingData"
+                class="alert alert-danger text-center mx-5"
+            >
+                Error loading data. Go back to <a href="">home</a> page.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<ng-template #createGroupTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create New Group</h4>
+        <button
+            type="button"
+            class="btn-close close pull-right"
+            aria-label="Close"
+            (click)="modalRef?.hide()"
+        >
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-create-group [modalRef]="modalRef"></app-create-group>
+    </div>
+</ng-template>
+<ng-template #viewUserTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">User Details</h4>
+        <button
+            type="button"
+            class="btn-close close pull-right"
+            aria-label="Close"
+            (click)="modalRef?.hide()"
+        >
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <!-- Sending user details through function in ts file -->
+        <app-view-user [user]="user" [target]="selectedUserChat"></app-view-user>
+    </div>
+</ng-template>
+<ng-template #viewGroupTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Group Details</h4>
+        <button
+            type="button"
+            class="btn-close close pull-right"
+            aria-label="Close"
+            (click)="modalRef?.hide()"
+        >
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <!-- Sending group details through function in ts file -->
+        <app-view-group [user]="user" [target]="selectedGroupChat" 
+        [displayMembers]="true" [modalRef]="modalRef"></app-view-group>
+    </div>
+</ng-template>
+
+<!-- Messaging Page -->
+<div class="messaging-page" *ngIf="!isPageLoading && !errorLoadingData">
+    <app-header></app-header>
+
+    <div class="main-container">
+        <!-- Left Sidebar: Chat List -->
+        <div class="chat-list" *ngIf="!isMobileView || !showChatWindow">
+            <div class="toggle-buttons">
+                <button
+                    (click)="setView('users')"
+                    [class.active]="!isGroupView"
+                    [disabled]="!isGroupView"
+                >
+                    Messages
+                </button>
+                <button
+                    (click)="setView('groups')"
+                    [class.active]="isGroupView"
+                    [disabled]="isGroupView"
+                    *ngIf="user.isVerified"
+                >
+                    Groups
+                </button>
+            </div>
+
+            <button
+                (click)="createGroup(createGroupTemplate)"
+                class="btn btn-primary col-11 btn-sm mx-2"
+                *ngIf="isGroupView"
+            >
+                Create Group
+            </button>
+
+            <div class="search-container row m-2">
+                <div class="col-md-8">
+                    <input
+                        (input)="filterChats()"
+                        [(ngModel)]="searchTerm"
+                        placeholder="{{
+                            'Search ' + (isGroupView ? 'groups' : 'chats')
+                        }}"
+                        type="text"
+                        class="form-control"
+                    />
+                </div>
+                <button
+                    (click)="filterChats(true)"
+                    class="btn btn-primary col-md-4"
+                >
+                    Search
+                </button>
+            </div>
+
+            <!-- List of Users or Groups -->
+            <div class="chat-list-items">
+                @if (isUserListLoading || isGroupListLoading ||
+                isAllGroupListLoading) {
+                <div
+                    class="d-flex justify-content-center align-items-center h-100"
+                >
+                    <span
+                        aria-hidden="true"
+                        class="spinner-grow spinner-grow-sm"
+                        role="status"
+                    ></span>
+                </div>
+                } @else if (isGroupView) {
+                <div
+                    (click)="selectChat(entry)"
+                    *ngFor="
+                        let entry of groupList.length > 0
+                            ? groupList
+                            : allGroupList
+                    "
+                    [class.active]="entry.id === selectedChat"
+                    class="chat-item"
+                >
+                    @if (entry.groupPictureUrl) {
+                    <img
+                        [src]="entry.groupPictureUrl"
+                        alt="Profile Picture"
+                        class="img-fluid rounded-start p-2"
+                        width="40"
+                        height="40"
+                    />
+                    } @else {
+                    <img
+                        src="person.svg"
+                        alt="Profile Picture"
+                        class="img-fluid rounded-start p-2"
+                        width="40"
+                        height="40"
+                    />
+                    }
+                    <div class="chat-info">
+                        <h4>{{ entry.name }}</h4>
+                        <p *ngIf="entry.bio">
+                            {{
+                                entry.bio.substring(0, 20) +
+                                    (entry.bio.length > 20 ? "..." : "")
+                            }}
+                        </p>
+                        @if (entry.isGroupLocked) {
+                        <p>Group is locked.</p>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <div
+                    (click)="selectChat(entry)"
+                    *ngFor="let entry of filteredChats"
+                    [class.active]="entry.email === selectedChat"
+                    class="chat-item"
+                >
+                    @if (entry.profilePictureUrl) {
+                    <img
+                        [src]="entry.profilePictureUrl"
+                        alt="Profile Picture"
+                        class="img-fluid rounded-start p-2"
+                        width="40"
+                        height="40"
+                    />
+                    } @else {
+                    <img
+                        src="person.svg"
+                        alt="Profile Picture"
+                        class="img-fluid rounded-start p-2"
+                        width="40"
+                        height="40"
+                    />
+                    }
+                    <div class="chat-info">
+                        <h4>
+                            {{
+                                (entry.email === user.email ? "You: " : "") +
+                                    entry.firstName +
+                                    " " +
+                                    entry.lastName
+                            }}
+                        </h4>
+                        <p *ngIf="entry.bio">
+                            {{
+                                entry.bio.substring(0, 20) +
+                                    (entry.bio.length > 20 ? "..." : "")
+                            }}
+                        </p>
+                        <p>
+                            @if (entry.isAccountLocked) { Account is locked. }
+                            @else if (entry.isVerified) { Verified Account }
+                            @else { Account Not Verified }
+                        </p>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Pagination for Users -->
+            <div *ngIf="!isGroupView && totalUsers > itemsPerPage" class="pagination-container">
+                <pagination
+                    [totalItems]="totalUsers"
+                    [itemsPerPage]="itemsPerPage"
+                    [(ngModel)]="currentUserPage"
+                    [maxSize]="maxPageDisplay"
+                    [rotate]="false"
+                    (pageChanged)="onUserPageChanged($event)"
+                ></pagination>
+            </div>
+
+            <!-- Pagination for Groups -->
+            <div *ngIf="isGroupView && totalGroups > itemsPerPage" class="pagination-container">
+                <pagination
+                    [totalItems]="totalGroups"
+                    [itemsPerPage]="itemsPerPage"
+                    [(ngModel)]="currentGroupPage"
+                    [maxSize]="maxPageDisplay"
+                    [rotate]="false"
+                    (pageChanged)="onGroupPageChanged($event)"
+                ></pagination>
+            </div>
+        </div>
+
+        <!-- Right Chat Window -->
+        <div
+            class="chat-window"
+            *ngIf="selectedChat && (!isMobileView || showChatWindow)"
+        >
+            <div class="chat-header">
+                <button
+                    *ngIf="isMobileView"
+                    class="btn btn-secondary back-btn"
+                    (click)="toggleChatWindow()"
+                >
+                    Back
+                </button>
+                @if (!isGroupView && selectedUserChat?.profilePictureUrl) {
+                <img
+                    [src]="selectedUserChat?.profilePictureUrl"
+                    alt="Profile Picture"
+                    class="img-fluid rounded-start p-2"
+                    width="40"
+                    height="40"
+                />
+                } @else {
+                <img
+                    src="person.svg"
+                    alt="Profile Picture"
+                    class="img-fluid rounded-start p-2"
+                    width="40"
+                    height="40"
+                />
+                } @if (!isGroupView) {
+                <h3 (click)="viewUser(viewUserTemplate, selectedUserChat)">
+                    {{
+                        selectedUserChat?.firstName +
+                            " " +
+                            selectedUserChat?.lastName
+                    }}
+                </h3>
+                } @else if (isGroupView) {
+                <h3 (click)="viewGroup(viewGroupTemplate, selectedGroupChat)">
+                    {{ selectedGroupChat?.name }}
+                </h3>
+                }
+            </div>
+            <div #messageContainer class="chat-messages">
+                @if (isMessageLoading) {
+                <div
+                    class="d-flex justify-content-center align-items-center h-100"
+                >
+                    <span
+                        aria-hidden="true"
+                        class="spinner-grow spinner-grow-sm"
+                        role="status"
+                    ></span>
+                </div>
+                } @else {
+                <!-- Pagination for Messages -->
+                <div *ngIf="totalCurrentMessages > itemsPerPage" class="pagination-container">
+                    <pagination
+                        [totalItems]="totalCurrentMessages"
+                        [itemsPerPage]="itemsPerPage"
+                        [(ngModel)]="currentMessagePage"
+                        [maxSize]="maxPageDisplay"
+                        [rotate]="false"
+                        (pageChanged)="onMessagePageChanged($event)"
+                    ></pagination>
+                </div>
+                <div
+                    *ngFor="let msg of messages"
+                    [ngClass]="{
+                        'message-sent': msg.sender.email === user.email,
+                        'message-received': msg.sender.email !== user.email
+                    }"
+                >
+                    <span class="fst-italic" *ngIf="msg.sender.email !== user.email">{{
+                        msg.sender.firstName +
+                            " " +
+                            msg.sender.lastName
+                    }}:</span>
+                    <p style="word-wrap: break-word" *ngIf="!msg.file">
+                        {{ msg.message }}
+                    </p>
+                    <span class="time mb-1">{{
+                        msg.createdAt | date : "shortTime"
+                    }}</span>
+                    <div *ngIf="msg.file" class="attached-file">
+                        <span class="file-name">{{
+                            msg.message || "Attached File"
+                        }}</span>
+                        <button
+                            class="btn btn-link btn-sm"
+                            (click)="
+                                convertToFile(
+                                    msg.file,
+                                    msg.contentType,
+                                    msg.message
+                                )
+                            "
+                        >
+                            Download
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="chat-input">
+                <!-- Display attached file if present -->
+                <div *ngIf="attachedFile" class="attached-file-preview">
+                    <span class="file-name">{{ attachedFile.name }}</span>
+                    <button
+                        class="btn-close close pull-right"
+                        (click)="removeAttachedFile()"
+                        aria-label="Close"
+                    >
+                        X
+                    </button>
+                </div>
+
+                <!-- Message input (hidden if a file is attached) -->
+                <input
+                    *ngIf="!attachedFile"
+                    (keyup.enter)="sendMessage()"
+                    [(ngModel)]="newMessage"
+                    placeholder="Type a message..."
+                    [maxlength]="300"
+                    type="text"
+                />
+                <!-- Hidden file input triggered by button -->
+                <input
+                    #fileInput
+                    (change)="handleFileInput($event)"
+                    style="display: none"
+                    type="file"
+                />
+                <button *ngIf="!attachedFile" (click)="fileInput.click()">
+                    Attach File
+                </button>
+                <button (click)="sendMessage()">Send</button>
+            </div>
+        </div>
+        <!-- <div *ngIf="!selectedChat" class="no-chat"> -->
+        <div *ngIf="!selectedChat && !isMobileView" class="no-chat">
+            <p>Please select a chat to start messaging.</p>
+        </div>
+    </div>
+</div>

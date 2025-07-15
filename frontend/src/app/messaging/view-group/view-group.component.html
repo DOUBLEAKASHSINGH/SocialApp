@@ -1,0 +1,253 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isPageLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="errorLoadingData" class="alert alert-danger text-center mx-5">
+    Error loading data. Go back to <a href="">home</a> page.
+</div>
+
+<div *ngIf="!errorLoadingData" class="container py-2">
+    <div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-xl-10">
+                <div class="mb-3 row">
+                    <!-- Loading Spinner -->
+                    <div class="row justify-content-center">
+                        <div class="spinner-grow text-dark p-5 m-5" role="status" *ngIf="isLoading">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Group Details -->
+                    <div class="card-body" *ngIf="!isLoading">
+                        <div class="row">
+                            <div class="col-12 mb-1">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <!-- <div class="col-md-12 text-center"> -->
+                                        <!-- @if (target?.profilePictureUrl) {
+                                            <img
+                                                [src]="
+                                                    target?.profilePictureUrl
+                                                "
+                                                alt="Profile Picture"
+                                                class="img-fluid rounded-start p-2"
+                                                width="150"
+                                                height="150"
+                                            />
+                                            } @else { -->
+                                        <!-- <img
+                                                src="person.svg"
+                                                alt="Profile Picture"
+                                                class="img-fluid rounded-start p-2"
+                                                width="150"
+                                                height="150"
+                                            /> -->
+                                        <!-- } -->
+                                        <!-- </div> -->
+                                        <div class="col-md-12 p-4">
+                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                Name:
+                                                {{ target?.name }}
+                                            </h6>
+                                            <h6 class="text-primary mb-1 pb-3">
+                                                <span class="fs-6">
+                                                    Admin:
+                                                    {{
+                                                    target?.admin
+                                                    ?.firstName +
+                                                    " " +
+                                                    target?.admin
+                                                    ?.lastName
+                                                    }}
+                                                </span>
+                                                <h6
+                                                    class="text-primary mb-1 pb-3">
+                                                    <span class="fs-6">
+                                                        Email:
+                                                        {{
+                                                        target?.admin?.email
+                                                        }}
+                                                    </span>
+                                                </h6>
+                                            </h6>
+
+                                            @if (target?.bio?.length) {
+                                            <p class="card-text">
+                                                <small class="text-body">
+                                                    {{ target?.bio }}
+                                                </small>
+                                            </p>
+                                            }
+                                            <p class="card-text mb-0" *ngIf="target?.createdAt">
+                                                <small class="text-muted">
+                                                    {{
+                                                    target?.createdAt
+                                                    | date
+                                                    : "dd MMM, yyyy"
+                                                    }}
+                                                </small>
+                                            </p>
+                                        </div>
+
+                                        <!-- Buttons -->
+                                        <div class="col-md-12 text-end">
+                                            <div class="card-body">
+                                                @if (displayMembers) {
+                                                <button class="btn btn-sm btn-outline-danger m-1 w-100" (click)="leaveGroup()"
+                                                    *ngIf="
+                                                        isGroupMember ||
+                                                        isGroupAdmin
+                                                    ">
+                                                    Leave Group
+                                                </button>
+                                                @if ((target?.members?.length ?? 0) < maxGroupSize) {
+                                                <button class="btn btn-sm btn-outline-success m-1 w-100" (click)="toggleAddMember()">
+                                                    {{ showAddMember ? "Back to Members" : "Add Member" }}
+                                                </button>
+                                                } @else {
+                                                <div class="alert alert-warning text-center m-1 w-100">
+                                                    Max group size reached.
+                                                </div>
+                                                }
+                                                }
+                                                @if (isGroupAdmin) {
+                                                <button class="btn btn-sm btn-danger m-1 w-100" (click)="deleteGroup()">
+                                                    Delete Group
+                                                </button>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <!-- Add Group Member -->
+                                        <div *ngIf="displayMembers && showAddMember">
+                                            <app-add-group-member 
+                                            [group]="target" 
+                                            [user]="user"
+                                            (groupUpdated)="onGroupUpdated($event)"
+                                            ></app-add-group-member>
+                                        </div>
+
+                                        <!-- Display Members -->
+                                        @if (displayMembers && !showAddMember) {
+                                        <div class="h1 text-danger text-center" *ngIf="totalItems <= 0">
+                                            Group Empty.
+                                        </div>
+
+                                        <div *ngIf="totalItems > 0" class="container py-3">
+                                            <div>
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-12 col-xl-10">
+                                                        <!-- User list -->
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col-12 mb-1"
+                                                                    *ngFor="let entry of sortedMembers">
+                                                                    <div class="card mb-3">
+                                                                        <div class="row g-0">
+                                                                            <div class="col-md-8 p-4">
+                                                                                <div class="row g-0">
+                                                                                    <div class="col-md-2">
+                                                                                        @if (entry.profilePictureUrl) {
+                                                                                        <img [src]="
+                                                                                                entry.profilePictureUrl
+                                                                                            " alt="Profile Picture"
+                                                                                            class="img-fluid rounded-start p-2"
+                                                                                            width="40" height="40" />
+                                                                                        }
+                                                                                        @else
+                                                                                        {
+                                                                                        <img src="person.svg"
+                                                                                            alt="Profile Picture"
+                                                                                            class="img-fluid rounded-start p-2"
+                                                                                            width="40" height="40" />
+                                                                                        }
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <h6
+                                                                                            class="card-subtitle mb-2 text-muted">
+                                                                                            Name:
+                                                                                            {{
+                                                                                            entry.firstName +
+                                                                                            " " +
+                                                                                            entry.lastName
+                                                                                            }}
+                                                                                        </h6>
+                                                                                        <h6
+                                                                                            class="text-primary mb-1 pb-3">
+                                                                                            <span class="fs-6">
+                                                                                                Email:
+                                                                                                {{
+                                                                                                entry.email
+                                                                                                }}
+                                                                                            </span>
+                                                                                        </h6>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                @if (entry.bio?.length) {
+                                                                                <p class="card-text">
+                                                                                    <small class="text-body">
+                                                                                        Bio:
+                                                                                        {{
+                                                                                        entry.bio
+                                                                                        }}
+                                                                                    </small>
+                                                                                </p>
+                                                                                }
+                                                                                <p class="card-text mb-0">
+                                                                                    <small class="text-muted">
+                                                                                        @if (entry.role == 'ADMIN') {
+                                                                                        Admin User
+                                                                                        }
+                                                                                        @else if (entry.isVerified) {
+                                                                                        Verified Account
+                                                                                        }
+                                                                                        @else {
+                                                                                        Account Not Verified
+                                                                                        }
+                                                                                    </small>
+                                                                                </p>
+                                                                                @if (entry.isAccountLocked) {
+                                                                                <p class="card-text mb-0">
+                                                                                    <small class="text-danger">
+                                                                                        Account Locked
+                                                                                    </small>
+                                                                                </p>
+                                                                                }
+                                                                            </div>
+                                                                            <div class="col-md-4 text-end"
+                                                                                *ngIf="isGroupAdmin">
+                                                                                <div class="card-body">
+                                                                                    <button
+                                                                                        class="btn btn-sm btn-warning m-1 w-100"
+                                                                                        (click)="removeMember(entry)">
+                                                                                        Remove Member
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

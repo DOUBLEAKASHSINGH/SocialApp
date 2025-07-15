@@ -1,0 +1,220 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<!-- Review Form -->
+<form [formGroup]="userForm" (ngSubmit)="updateUser()">
+    <div class="row form-outline mb-2 px-3">
+        <div class="col-12 d-flex justify-content-center">
+            @if (user.profilePictureUrl) {
+                <img [src]="user.profilePictureUrl" alt="Profile Picture"
+                     class="img-fluid rounded-start p-2"
+                     width="200" height="200">
+            } @else {
+                <img src="person.svg" alt="Profile Picture"
+                     class="img-fluid rounded-start p-2"
+                     width="200" height="200">
+            }
+        </div>
+            <label for="edit-image" class="btn p-0">
+                Edit Image:
+                <img
+                    src="edit.svg"
+                    alt="Edit"
+                    class="img-fluid rounded-start me-2"
+                    width="24"
+                    height="24"
+                />
+            </label>
+            <input
+                class="d-none"
+                type="file"
+                id="edit-image"
+                accept="image/png, image/jpeg"
+                #fileInput
+                (change)="changeImage($event)"
+            />
+        {{user.email}}
+    </div>
+    <div class="row form-outline mb-2 px-3">
+        <input
+            class="form-control"
+            formControlName="firstName"
+            id="first-name-input"
+            name="first-name-input"
+            placeholder="Enter First Name"
+            type="text"
+        />
+        <label
+            class="form-label"
+            for="first-name-input"
+        >First Name
+            <span
+                *ngIf="firstName?.invalid &&
+                        firstName?.touched &&
+                        !firstName?.errors?.['pattern'] &&
+                        !firstName?.errors?.['minlength'] &&
+                        !firstName?.errors?.['maxlength']
+                    "
+                class="text-danger"
+            >* Required</span
+            >
+            <span
+                *ngIf="firstName?.invalid &&
+                        firstName?.touched &&
+                        firstName?.errors?.['pattern']"
+                class="text-danger"
+            >
+                * Only alphabets and space are
+                allowed.
+            </span>
+            <span
+                *ngIf="firstName?.invalid &&
+                        firstName?.touched &&
+                        !firstName?.errors?.['pattern'] &&
+                        (firstName?.errors?.['minlength'] ||
+                        firstName?.errors?.['maxlength'])"
+                class="text-danger"
+            >
+                * Length 2-50.
+            </span>
+        </label>
+    </div>
+    <div class="row form-outline mb-2 px-3">
+<!--        <div class="col-sm-12 px-3">-->
+            <input
+                class="form-control"
+                formControlName="lastName"
+                id="last-name-input"
+                name="last-name-input"
+                placeholder="Enter Last Name"
+                type="text"
+            />
+            <label
+                class="form-label"
+                for="last-name-input"
+            >Last Name
+<!--                <span-->
+<!--                    *ngIf="-->
+<!--                        lastName?.invalid &&-->
+<!--                        lastName?.touched &&-->
+<!--                        !lastName?.errors?.['pattern'] &&-->
+<!--                        !lastName?.errors?.['minlength'] &&-->
+<!--                        !lastName?.errors?.['maxlength']-->
+<!--                    "-->
+<!--                    class="text-danger"-->
+<!--                >* Required</span-->
+<!--                >-->
+                <span
+                    *ngIf="lastName?.invalid &&
+                            lastName?.touched &&
+                            lastName?.errors?.['pattern']"
+                    class="text-danger"
+                >
+                    * Only alphabets and space are
+                    allowed.
+                </span>
+                <span
+                    *ngIf="lastName?.invalid &&
+                            lastName?.touched &&
+                            !lastName?.errors?.['pattern'] &&
+                            (lastName?.errors?.['minlength'] ||
+                            lastName?.errors?.['maxlength'])"
+                    class="text-danger"
+                >
+                    * Length 2-50.
+                </span></label
+            >
+<!--        </div>-->
+    </div>
+    <div class="row form-outline mb-2 px-3">
+<!--        <div class="col-sm-12 px-3">-->
+            <textarea
+                type="text"
+                id="bio-input"
+                name="bio-input"
+                class="form-control"
+                style="max-height: 10rem;"
+                formControlName="bio"
+                placeholder="Enter Description"
+            ></textarea>
+            <label
+                class="form-label px-3"
+                for="bio-input"
+            > Bio
+                <span
+                    *ngIf="bio?.invalid &&
+                            bio?.touched &&
+                            bio?.errors?.['pattern']"
+                    class="text-danger"
+                >
+                    * Semicolons not allowed.
+                </span>
+                <span
+                    *ngIf="bio?.invalid &&
+                            bio?.touched &&
+                            !bio?.errors?.['pattern'] &&
+                            (bio?.errors?.['minlength'] ||
+                            bio?.errors?.['maxlength'])"
+                    class="text-danger"
+                >
+                    * Max Length 255.
+                </span>
+            </label>
+<!--        </div>-->
+    </div>
+
+    <div class="row form-outline mb-2 px-3">
+        <div
+            *ngIf="isAdminUser && !isCurrentUser"
+            class="form-check form-switch"
+        >
+            <input
+                class="form-check-input form-control"
+                formControlName="userRole"
+                id="admin-check-box"
+                name="admin-check-box"
+                type="checkbox"
+            />
+            <label
+                class="form-check-label"
+                for="admin-check-box"
+            >ADMIN Rights</label
+            >
+        </div>
+    </div>
+
+<!--    <alert-->
+<!--        type="danger"-->
+<!--        [hidden]="-->
+<!--            !reviewForm.touched ||-->
+<!--            (code?.value.length > 0 &&-->
+<!--                name?.value.length > 0 &&-->
+<!--                brand?.value.length > 0 &&-->
+<!--                heading?.value.length > 0 &&-->
+<!--                description?.value.length > 0)-->
+<!--        "-->
+<!--    >-->
+<!--        <strong>All</strong> fields required.-->
+<!--    </alert>-->
+    <div class="row pt-1 mb-0 w-50 ms-auto me-auto">
+        <button
+            class="btn btn-dark btn-lg btn-block"
+            [disabled]="userForm.invalid || userForm.pristine"
+            type="submit"
+        >
+            <span
+                class="spinner-grow spinner-grow-sm"
+                role="status"
+                aria-hidden="true"
+                *ngIf="isLoading"
+            ></span>
+            Submit
+        </button>
+    </div>
+</form>

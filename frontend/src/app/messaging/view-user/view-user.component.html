@@ -1,0 +1,166 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isPageLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="errorLoadingData" class="alert alert-danger text-center mx-5">
+    Error loading data. Go back to <a href="">home</a> page.
+</div>
+
+<div *ngIf="!errorLoadingData" class="container py-2">
+    <div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-xl-10">
+                <div class="mb-3 row">
+                    <!-- Loading Spinner -->
+                    <div class="row justify-content-center">
+                        <div
+                            class="spinner-grow text-dark p-5 m-5"
+                            role="status"
+                            *ngIf="isLoading"
+                        >
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- User list -->
+                    <div class="card-body" *ngIf="!isLoading">
+                        <div class="row">
+                            <div class="col-12 mb-1">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-12 text-center">
+                                            @if (target?.profilePictureUrl) {
+                                            <img
+                                                [src]="
+                                                    target?.profilePictureUrl
+                                                "
+                                                alt="Profile Picture"
+                                                class="img-fluid rounded-start p-2"
+                                                width="150"
+                                                height="150"
+                                            />
+                                            } @else {
+                                            <img
+                                                src="person.svg"
+                                                alt="Profile Picture"
+                                                class="img-fluid rounded-start p-2"
+                                                width="150"
+                                                height="150"
+                                            />
+                                            }
+                                        </div>
+                                        <div class="col-md-8 p-4">
+                                            <h6
+                                                class="card-subtitle mb-2 text-muted"
+                                            >
+                                                Name:
+                                                {{
+                                                    target?.firstName +
+                                                        " " +
+                                                        target?.lastName
+                                                }}
+                                            </h6>
+                                            <h6 class="text-primary mb-1 pb-3">
+                                                <span class="fs-6">
+                                                    Email: {{ target?.email }}
+                                                </span>
+                                            </h6>
+
+                                            @if (target?.bio?.length) {
+                                            <p class="card-text">
+                                                <small class="text-body">
+                                                    {{ target?.bio }}
+                                                </small>
+                                            </p>
+                                            }
+                                            <p class="card-text mb-0">
+                                                <small class="text-muted">
+                                                    @if (target?.isVerified) {
+                                                    Verified Account } @else {
+                                                    Account Not Verified }
+                                                </small>
+                                            </p>
+                                            @if (target?.isAccountLocked) {
+                                            <p class="card-text mb-0">
+                                                <small class="text-danger">
+                                                    Account Locked
+                                                </small>
+                                            </p>
+                                            }
+                                            <p
+                                                class="card-text mb-0"
+                                                *ngIf="target?.createdAt"
+                                            >
+                                                <small class="text-muted">
+                                                    {{
+                                                        target?.createdAt
+                                                            | date
+                                                                : "dd MMM, yyyy"
+                                                    }}
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="col-md-4 text-end"
+                                            *ngIf="user?.isVerified && user?.email != target?.email"
+                                        >
+                                            <div class="card-body">
+                                                <button
+                                                    class="btn btn-sm btn-danger m-1 w-75"
+                                                    (click)="blockUser()"
+                                                    *ngIf="!isBlocked"
+                                                >
+                                                    Block
+                                                </button>
+                                                <button
+                                                    class="btn btn-sm btn-outline-danger m-1 w-75"
+                                                    *ngIf="isBlocked"
+                                                    disabled
+                                                >
+                                                    User is Blocked
+                                                </button>
+                                                <button
+                                                    class="btn btn-sm btn-success m-1 w-75"
+                                                    (click)="addFriend()"
+                                                    *ngIf="!isFriend && !isRequestPending && !isBlocked"
+                                                >
+                                                    Add Friend
+                                                </button>
+                                                <button
+                                                    class="btn btn-sm btn-outline-danger m-1 w-75"
+                                                    (click)="removeFriend()"
+                                                    *ngIf="isFriend"
+                                                >
+                                                    Remove Friend
+                                                </button>
+                                                @if (isRequestPending && (relation.friend.email === user?.email)) {
+                                                <button
+                                                    class="btn btn-sm btn-success m-1 w-75"
+                                                    (click)="acceptRequest()"
+                                                >
+                                                    Accept Request
+                                                </button>
+                                                <button
+                                                    class="btn btn-sm btn-danger m-1 w-75"
+                                                    (click)="rejectRequest()"
+                                                >
+                                                    Reject Request
+                                                </button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
