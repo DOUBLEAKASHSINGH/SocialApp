@@ -1,0 +1,166 @@
+<!-- Modal -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Enter OTP</h4>
+        <button
+            type="button"
+            class="btn-close close pull-right"
+            aria-label="Close"
+            (click)="modalRef?.hide()"
+        >
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-otp [modalRef]="modalRef" [onSubmitOtp]="handleLoginOtp"></app-otp>
+    </div>
+</ng-template>
+
+<section class="vh-100 bg-light">
+    <div class="container py-1 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-8">
+                <div class="card border-2">
+                    <div class="d-flex justify-content-end">
+                        <button
+                            (click)="goToHome()"
+                            aria-label="Close"
+                            class="btn-close close m-4 position-absolute"
+                            type="button"
+                        ></button>
+                    </div>
+                    <div class="row">
+                        <!-- Side Image -->
+                        <div class="col-md-6 col-lg-5 d-none d-md-block">
+                            <img
+                                alt="login form"
+                                class="img-fluid img p-3"
+                                src="https://img.freepik.com/free-photo/3d-render-robot-with-padlock_1048-6042.jpg?
+                                w=740&t=st=1685983838~exp=1685984438~
+                                hmac=9d57027ea7fd273fc9c1718cb4824bb1abb00ac1d941238cf0577cb6ef57e8b6"/>
+                        </div>
+                        <div
+                            class="col-md-6 col-lg-7 d-flex align-items-center"
+                        >
+                            <div class="card-body p-4 p-lg-5 text-black">
+                                <!-- Login Form -->
+                                <form
+                                    (ngSubmit)="login(template)"
+                                    [formGroup]="loginForm"
+                                >
+                                    <div
+                                        class="row d-flex align-items-center mb-3 pb-1"
+                                    >
+                                        <span class="h1 fw-bold mb-0"
+                                        >Login</span
+                                        >
+                                    </div>
+
+                                    <h5 class="row fw-normal mb-2 pb-2">
+                                        Sign into your account
+                                    </h5>
+
+                                    <div class="row form-outline mb-2">
+                                        <input
+                                            class="form-control form-control-lg"
+                                            formControlName="email"
+                                            id="email-id-input"
+                                            name="email"
+                                            placeholder="Enter Email ID"
+                                            type="email"
+                                        />
+                                        <label
+                                            class="form-label"
+                                            for="email-id-input"
+                                        >Email address
+                                            <span
+                                                *ngIf="
+                                                    email?.value?.length == 0 &&
+                                                    email?.touched
+                                                "
+                                                class="text-danger"
+                                            >* Required</span>
+                                            <span
+                                                *ngIf="
+                                                    email?.invalid &&
+                                                    email?.value?.length > 0 &&
+                                                    email?.touched
+                                                "
+                                                class="text-danger"
+                                            >* Invalid Email</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="row form-outline mb-3">
+                                        <input
+                                            class="form-control form-control-lg"
+                                            formControlName="password"
+                                            id="password-input"
+                                            name="password"
+                                            placeholder="Enter Password"
+                                            type="password"
+                                        />
+                                        <label
+                                            class="form-label"
+                                            for="password-input"
+                                        >Password
+                                            <span
+                                                *ngIf="
+                                                    password?.invalid &&
+                                                    password?.touched
+                                                "
+                                                class="text-danger"
+                                            >* Required</span
+                                            ></label
+                                        >
+                                    </div>
+                                    <alert *ngIf="isInvalidLogin" type="danger">
+                                        Invalid Login Credentials.
+                                    </alert>
+                                    <alert *ngIf="isAccountLocked" type="danger">
+                                        Account is suspended. Please contact support.
+                                    </alert>
+                                    <alert *ngIf="isAttemptExceeded" type="danger">
+                                        Login attempts exceeded. Account locked for 15 minutes.
+                                    </alert>
+                                    <div class="row pt-1 mb-4">
+                                        <button
+                                            [disabled]="
+                                                loginForm.invalid || isLoading
+                                            "
+                                            class="btn btn-dark btn-lg btn-block"
+                                            type="submit"
+                                        >
+                                            <span
+                                                *ngIf="isLoading"
+                                                aria-hidden="true"
+                                                class="spinner-grow spinner-grow-sm"
+                                                role="status"
+                                            ></span>
+                                            Login
+                                        </button>
+                                    </div>
+
+                                    <a class="small text-muted" href="/reset-password"
+                                        >Forgot password?</a
+                                    >
+                                    <p class="">
+                                        Don't have an account?
+                                        <a href="/register">Register here</a>
+                                    </p>
+                                    <!-- <a href="#" class="small text-muted"
+                                        >Terms of use.
+                                    </a>
+
+                                    <a href="#" class="small text-muted"
+                                        >Privacy policy</a
+                                    > -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

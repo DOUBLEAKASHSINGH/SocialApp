@@ -1,0 +1,36 @@
+<app-header></app-header>
+
+<section class="Welcome">
+    <h1>Welcome to Social Media App</h1>
+    <p>Connect and chat with your friends and relatives</p>
+    <div class="cta-buttons">
+        <a (click)="goToRegister()" class="btn primary">Join Now</a>
+    </div>
+</section>
+
+<section class="features">
+    <h2>Features</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <h3 (click)="isLoggedIn ? goToMessaging() : goToLogin()" class="btn btn-primary">
+                Live Messaging
+            </h3>
+            <p>Chat with your friends and connection at any-time.</p>
+        </div>
+        <div class="feature-card">
+            <h3 (click)="isLoggedIn ? goToDashboard() : goToLogin()" class="btn btn-primary" *ngIf="isLoggedIn">
+                Personal Dashboard
+            </h3>
+            <p>Your workspace for everything.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about">
+    <h2>About Social Media App</h2>
+    <p>This is our project as a part of our college coursework.</p>
+</section>
+
+<footer class="footer">
+    <p>Made college coursework | &copy; 2025 SocialApp</p>
+</footer>

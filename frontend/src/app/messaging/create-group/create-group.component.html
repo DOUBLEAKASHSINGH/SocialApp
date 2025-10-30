@@ -1,0 +1,37 @@
+<div class="create-group-container">
+    <form [formGroup]="groupForm" (ngSubmit)="createGroup()">
+        <label for="name">Group Name</label>
+        <input
+            id="name"
+            formControlName="name"
+            type="text"
+            placeholder="Enter group name"
+        />
+
+        <label for="bio">Group Bio</label>
+        <textarea
+            id="bio"
+            formControlName="bio"
+            placeholder="Enter group description"
+        ></textarea>
+
+        <ng-container *ngIf="members.length > 0">
+            <label for="members">Select Members</label>
+            <select id="members" formControlName="members" multiple>
+                <option *ngFor="let user of members" [ngValue]="user">
+                    {{ user.firstName }} {{ user.lastName }}
+                </option>
+            </select>
+        </ng-container>
+
+        <button type="submit" [disabled]="isLoading">
+            <span
+                *ngIf="isLoading"
+                aria-hidden="true"
+                class="spinner-grow spinner-grow-sm"
+                role="status"
+            ></span>
+            Create Group
+        </button>
+    </form>
+</div>

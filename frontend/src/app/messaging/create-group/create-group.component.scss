@@ -1,0 +1,45 @@
+.create-group-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    h2 {
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #3b5998;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[disabled] {
+            background-color: #999;
+        }
+    }
+}

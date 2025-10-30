@@ -1,0 +1,344 @@
+<!-- Modal -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Enter OTP</h4>
+        <button
+            type="button"
+            class="btn-close close pull-right"
+            aria-label="Close"
+            (click)="modalRef?.hide()"
+        >
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-otp [modalRef]="modalRef" 
+        [onSubmitOtp]="handleRegisterOtp"></app-otp>
+    </div>
+</ng-template>
+
+<section class="vh-100 bg-light">
+    <div class="container py-1 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-8">
+                <div class="card border-2">
+                    <div class="d-flex justify-content-end">
+                        <button
+                            (click)="goToHome()"
+                            aria-label="Close"
+                            class="btn-close close m-4 position-absolute"
+                            type="button"
+                        ></button>
+                    </div>
+                    <div class="row">
+                        <!-- <div
+                            class="col-md-6 col-lg-7 d-flex align-items-center"
+                        > -->
+                        <div class="card-body p-4 p-lg-5 text-black">
+                            <!-- Login Form -->
+                            <form
+                                (ngSubmit)="register(template)"
+                                [formGroup]="registerForm"
+                            >
+                                <div
+                                    class="row d-flex align-items-center mb-3 pb-1"
+                                >
+                                    <span class="h1 fw-bold mb-0"
+                                    >Register new user</span
+                                    >
+                                </div>
+
+                                <h5 class="row fw-normal mb-2 pb-2 px-3">
+                                    Enter account details
+                                </h5>
+
+                                <div class="row form-outline mb-2 px-2">
+                                    <input
+                                        class="form-control"
+                                        formControlName="email"
+                                        id="email-id-input"
+                                        name="email"
+                                        placeholder="Enter Email ID"
+                                        type="email"
+                                    />
+                                    <label
+                                        class="form-label"
+                                        for="email-id-input"
+                                    >Email address (OTP will be sent on submit.)
+                                        <span
+                                            *ngIf="
+                                                email?.invalid && email?.touched
+                                            "
+                                            class="text-danger"
+                                        >* Required</span>
+                                        <span
+                                            *ngIf="isInvalidOtp"
+                                            class="text-danger"
+                                        >* OTP was invalid. Check email-id and try Again.</span>
+                                    </label>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6 px-3">
+                                        <div class="form-outline mb-3">
+                                            <input
+                                                class="form-control"
+                                                formControlName="firstName"
+                                                id="first-name-input"
+                                                name="first-name-input"
+                                                placeholder="Enter First Name"
+                                                type="text"
+                                            />
+                                            <label
+                                                class="form-label"
+                                                for="first-name-input"
+                                            >First Name
+                                                <span
+                                                    *ngIf="
+                                                        firstName?.invalid &&
+                                                        firstName?.touched &&
+                                                        !firstName?.errors?.['pattern'] &&
+                                                        !firstName?.errors?.['minlength'] &&
+                                                        !firstName?.errors?.['maxlength']
+                                                    "
+                                                    class="text-danger"
+                                                >* Required</span
+                                                >
+                                                <span
+                                                    *ngIf="
+                                                    firstName?.invalid &&
+                                                    firstName?.touched &&
+                                                    firstName?.errors?.['pattern']"
+                                                    class="text-danger"
+                                                >
+                                                    * Only alphabets are
+                                                    allowed.
+                                                </span>
+                                                <span
+                                                    *ngIf="
+                                                    firstName?.invalid &&
+                                                    firstName?.touched &&
+                                                    !firstName?.errors?.['pattern'] &&
+                                                    (firstName?.errors?.['minlength'] ||
+                                                    firstName?.errors?.['maxlength'])"
+                                                    class="text-danger"
+                                                >
+                                                    * Length 2-50.
+                                                </span></label
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 px-3">
+                                        <div class="form-outline mb-3">
+                                            <input
+                                                class="form-control"
+                                                formControlName="lastName"
+                                                id="last-name-input"
+                                                name="last-name-input"
+                                                placeholder="Enter Last Name"
+                                                type="text"
+                                            />
+                                            <label
+                                                class="form-label"
+                                                for="last-name-input"
+                                            >Last Name
+                                                <span
+                                                    *ngIf="
+                                                    lastName?.invalid &&
+                                                    lastName?.touched &&
+                                                    lastName?.errors?.['pattern']"
+                                                    class="text-danger"
+                                                >
+                                                    * Only alphabets and space are
+                                                    allowed.
+                                                </span>
+                                                <span
+                                                    *ngIf="
+                                                    lastName?.invalid &&
+                                                    lastName?.touched &&
+                                                    !lastName?.errors?.['pattern'] &&
+                                                    (lastName?.errors?.['minlength'] ||
+                                                    lastName?.errors?.['maxlength'])"
+                                                    class="text-danger"
+                                                >
+                                                    * Length 2-50.
+                                                </span></label
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6 px-3">
+                                        <div class="form-outline mb-3">
+                                            <input
+                                                class="form-control"
+                                                formControlName="password"
+                                                id="password-input"
+                                                name="password"
+                                                placeholder="Enter Password"
+                                                type="password"
+                                            />
+                                            <label
+                                                class="form-label"
+                                                for="password-input"
+                                            >Password
+                                                <span
+                                                    *ngIf="
+                                                password?.invalid &&
+                                                password?.touched &&
+                                                !password?.errors?.['pattern'] &&
+                                                !password?.errors?.['minlength'] &&
+                                                !password?.errors?.['maxlength']
+                                            "
+                                                    class="text-danger"
+                                                >* Required</span
+                                                >
+                                                <span
+                                                    *ngIf="
+                                            password?.invalid &&
+                                            password?.touched &&
+                                            password?.errors?.['pattern'] &&
+                                            !password?.errors?.['minlength'] &&
+                                            !password?.errors?.['maxlength']"
+                                                    class="text-danger position-absolute bg-light validate border pe-1"
+                                                >
+                                                    <ul>
+                                                        <li>
+                                                            At least 8
+                                                            characters
+                                                        </li>
+                                                        <li>
+                                                            Contains at
+                                                            least one lowercase
+                                                            letter
+                                                        </li>
+                                                        <li>
+                                                            Contains at least
+                                                            one uppercase letter
+                                                        </li>
+                                                        <li>
+                                                            Contains at least
+                                                            one numeric digit
+                                                        </li>
+                                                        <li>
+                                                            Contains at least
+                                                            one special
+                                                            character from
+                                                            &commat;$!%*?&
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                                <span
+                                                    *ngIf="
+                                                        password?.invalid &&
+                                                        password?.touched &&
+                                                        (password?.errors?.['minlength'] ||
+                                                        password?.errors?.['maxlength'])"
+                                                    class="text-danger"
+                                                >
+                                                    * Length 8-20.
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 px-3">
+                                        <div class="form-outline mb-3">
+                                            <input
+                                                class="form-control"
+                                                formControlName="confirmPassword"
+                                                id="confirm-password-input"
+                                                name="confirm-password-input"
+                                                placeholder="Enter Confirm Password"
+                                                type="password"
+                                            />
+                                            <label
+                                                class="form-label"
+                                                for="confirm-password-input"
+                                            >Confirm Password
+                                                <span
+                                                    *ngIf="
+                                                        confirmPassword?.invalid &&
+                                                        confirmPassword?.touched &&
+                                                        !(
+                                                            confirmPassword?.value !=
+                                                            password?.value
+                                                        )
+                                                    "
+                                                    class="text-danger"
+                                                >* Required</span
+                                                >
+                                                <span
+                                                    *ngIf="
+                                                        !confirmPassword?.invalid &&
+                                                        confirmPassword?.touched &&
+                                                        confirmPassword?.value !=
+                                                            password?.value
+                                                    "
+                                                    class="text-danger"
+                                                >* Does not match
+                                                    password</span
+                                                ></label
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    *ngIf="isAdminUser"
+                                    class="form-check form-switch mb-3"
+                                >
+                                    <input
+                                        class="form-check-input form-control"
+                                        formControlName="userRole"
+                                        id="admin-check-box"
+                                        name="admin-check-box"
+                                        type="checkbox"
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="admin-check-box"
+                                    >Register a ADMIN user.</label
+                                    >
+                                </div>
+                                <div class="row pt-1 mb-4 w-50 ms-auto me-auto">
+                                    <button
+                                        [disabled]="
+                                            registerForm.invalid ||
+                                            isLoading ||
+                                            confirmPassword?.value !=
+                                                password?.value
+                                        "
+                                        class="btn btn-dark btn-lg btn-block"
+                                        type="submit"
+                                    >
+                                        <span
+                                            *ngIf="isLoading"
+                                            aria-hidden="true"
+                                            class="spinner-grow spinner-grow-sm"
+                                            role="status"
+                                        ></span>
+                                        Register
+                                    </button>
+                                </div>
+
+                                <p class="">
+                                    Already have an account?
+                                    <a href="/login">Login here</a>
+                                </p>
+                                <!-- <a href="#" class="small text-muted"
+                                        >Terms of use.
+                                    </a>
+
+                                    <a href="#" class="small text-muted"
+                                        >Privacy policy</a
+                                    > -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

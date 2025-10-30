@@ -1,0 +1,89 @@
+<div class="container-fluid g-0">
+    <div class="navbar navbar-dark bg-dark px-5">
+        <a class="navbar-brand fs-3 fw-bolder link-light" href=""
+        >Social Media App - FCS-29</a
+        >
+        <div *ngIf="!isLoggedIn">
+            <button class="btn btn-primary" (click)="loginRegister()">
+                Login/Register
+            </button>
+        </div>
+        <div *ngIf="isLoggedIn" class="btn-group pe-5" dropdown>
+            <!-- <label class="nav-link link-light">Action</label> -->
+            <button
+                id="button-animated"
+                dropdownToggle
+                type="button"
+                class="btn dropdown-toggle text-light"
+                aria-controls="dropdown-animated"
+            >
+                <span class="caret fs-5 fw-normal">{{ username }}</span>
+                &nbsp;
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-person-fill"
+                    viewBox="0 0 16 16"
+                >
+                    <path
+                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                    />
+                </svg>
+            </button>
+            <ul
+                id="dropdown-animated"
+                *dropdownMenu
+                class="dropdown-menu dropdown-menu-right"
+                role="menu"
+                aria-labelledby="button-animated"
+            >
+                <!-- <li role="menuitem" *ngIf="isAdminUser">
+                    <a class="dropdown-item" href="/reviews"
+                        >View/Approve Reviews</a
+                    >
+                </li> -->
+                <li role="menuitem">
+                    <a class="dropdown-item" href="/dashboard"
+                    >Dashboard</a
+                    >
+                </li>
+                <li role="menuitem" *ngIf="isAdminUser">
+                    <a class="dropdown-item" href="/register"
+                    >Register New User</a
+                    >
+                </li>
+                <li
+                    role="menuitem"
+                    class="divider dropdown-divider"
+                    *ngIf="isAdminUser"
+                >
+                    divider placeholder
+                </li>
+                <li role="menuitem">
+                    <button
+                        class="dropdown-item bg-danger text-light"
+                        (click)="logout()"
+                    >
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Page Navigation -->
+<ul class="nav bg-dark bg-opacity-75 px-5" *ngIf="isLoggedIn">
+    <li class="nav-item fw-bold">
+        <button class="nav-link link-light btn btn-link" (click)="goToMessaging()">
+            Messaging
+        </button>
+    </li>
+    <li class="nav-item fw-bold">
+        <button class="nav-link link-light btn btn-link" (click)="goToDashboard()">
+            Dashboard
+        </button>
+    </li>
+</ul>

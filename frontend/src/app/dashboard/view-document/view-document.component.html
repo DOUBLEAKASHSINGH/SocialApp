@@ -1,0 +1,46 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isPageLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div
+    class="h3 text-danger text-center"
+    *ngIf="!isDocumentAvailable && !errorLoadingData && !isPageLoading"
+>
+    No Document Found.
+</div>
+
+<div *ngIf="errorLoadingData" class="alert alert-danger text-center mx-5">
+    Error loading data. Go back to <a href="">home</a> page.
+</div>
+
+<div *ngIf="!errorLoadingData && isDocumentAvailable" class="container py-2">
+    <div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-xl-10">
+                <iframe
+                    *ngIf="documentUrl"
+                    [src]="documentUrl"
+                    width="100%"
+                    height="600px"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 col-xl-10">
+    <label for="doc" class="form-label"
+        >Upload new document. (This will replace existing document)</label
+    >
+    <input
+        class="form-control"
+        type="file"
+        id="doc"
+        accept="application/pdf"
+        (change)="onFileSelected($event, user)"
+    />
+</div>

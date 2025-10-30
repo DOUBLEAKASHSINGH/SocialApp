@@ -1,0 +1,86 @@
+<!-- Page loading spinner -->
+<div class="spinner-container" *ngIf="isLoading">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="add-group-member mx-2 my-2" *ngIf="!isLoading">
+    <div class="search-container me-1 row">
+        <div class=" col-md-9">
+            <input [(ngModel)]="searchTerm" (keyup.enter)="searchUsers()" placeholder="Search for users..." type="text"
+                class="form-control" />
+        </div>
+        <button (click)="searchUsers()" class="btn btn-primary col-md-3">
+            Search
+        </button>
+    </div>
+
+    <div *ngIf="isSearching" class="text-center mt-3">
+        <span class="spinner-border text-primary" role="status"></span>
+    </div>
+
+    <div *ngIf="searchResults.length > 0" class="mt-1">
+        <p class="text-muted">
+            Displaying
+            {{
+                currentPage * itemsPerPage -
+                    itemsPerPage +
+                    1
+            }}-{{
+                min(
+                    currentPage * itemsPerPage,
+                    totalItems
+                )
+            }}
+            of {{ totalItems }} Users.</p>
+    </div>
+    <!-- Pagination -->
+    <div class="row justify-content-center mt-1" *ngIf="totalItems > itemsPerPage">
+        <pagination
+            class="justify-content-end"
+            [totalItems]="totalItems"
+            [itemsPerPage]="itemsPerPage"
+            [(ngModel)]="currentPage"
+            [maxSize]="maxPageDisplay"
+            [rotate]="false"
+            (pageChanged)="pageChanged($event)"
+        ></pagination>
+    </div>
+
+    <div *ngIf="searchResults.length > 0" class="search-results mt-3">
+        <div *ngFor="let entry of searchResults" class="card mb-2">
+            <div class="card-body row p-3 d-flex justify-content-between align-items-center">
+                <div class="col-md-8">
+                    <h6 class="mb-0">{{ entry.firstName }} {{ entry.lastName }}</h6>
+                    <p class="mb-0 text-muted fs-6">{{ entry.email }}</p>
+                </div>
+                @if (isMaxLengthReached()) {
+                <span class="badge bg-danger col-md-3 mx-1">Max Group Size Reached</span>
+                }
+                @else if (isGroupMember(entry)) {
+                <span class="badge bg-success col-md-3 mx-1">Already in Group</span>
+                } @else {
+                <button class="btn btn-success btn-sm col-md-3 mx-1" (click)="addUserToGroup(entry)">
+                    Add to Group
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="row justify-content-center mt-3" *ngIf="totalItems > itemsPerPage">
+        <pagination
+            class="justify-content-end"
+            [totalItems]="totalItems"
+            [itemsPerPage]="itemsPerPage"
+            [(ngModel)]="currentPage"
+            [maxSize]="maxPageDisplay"
+            [rotate]="false"
+            (pageChanged)="pageChanged($event)"
+        ></pagination>
+    </div>
+</div>
