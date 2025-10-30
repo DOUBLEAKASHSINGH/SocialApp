@@ -5,7 +5,7 @@ A secure, full-stack social media application with end-to-end encrypted messagin
 
 ---
 
-## 🚀 Features
+##  Features
 
 - **Secure Authentication**: OTP-based signup, JWT login sessions  
 - **Encrypted Messaging**: One-to-one and group chats with file sharing  
@@ -15,7 +15,7 @@ A secure, full-stack social media application with end-to-end encrypted messagin
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Component    | Technology                        |
 |--------------|------------------------------------|
@@ -27,9 +27,9 @@ A secure, full-stack social media application with end-to-end encrypted messagin
 
 ---
 
-## ⚙️ Quick Setup
+##  Quick Setup
 
-### 📦 Prerequisites
+###  Prerequisites
 
 - Java 23  
 - MySQL 8.0+  
@@ -38,7 +38,7 @@ A secure, full-stack social media application with end-to-end encrypted messagin
 
 ---
 
-## 📥 Installation
+##  Installation
 
 ### 1. Clone the Repository
 
@@ -83,7 +83,7 @@ mysql -u root -p fcs29 < script.sql
 
 ---
 
-## 🌐 Nginx Configuration
+##  Nginx Configuration
 
 Add this to your Nginx config (`/etc/nginx/sites-available/default`):
 
@@ -108,7 +108,7 @@ server {
 
 ---
 
-## 🔧 Java Backend Service
+##  Java Backend Service
 
 ```bash
 sudo systemctl enable fcs29    # Auto-start on boot
@@ -117,7 +117,7 @@ sudo systemctl restart fcs29
 
 ---
 
-## 📘 User Guide
+##  User Guide
 
 - **Sign Up**: OTP sent to email (check spam folder)  
 - **Login**: Admin must verify your account first  
@@ -128,7 +128,7 @@ sudo systemctl restart fcs29
 
 ---
 
-## 🛡 Security Highlights
+##  Security Highlights
 
 - HTTPS with TLS 1.3  
 - BCrypt password hashing  
@@ -137,7 +137,7 @@ sudo systemctl restart fcs29
 
 ---
 
-## 📄 Documentation
+##  Documentation
 
 - **Project Report** – Technical deep dive  
 - **User Manual** – Step-by-step usage  
